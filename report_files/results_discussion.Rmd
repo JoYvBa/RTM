@@ -4,3 +4,91 @@ author: "Willem Poelman, Denis Power and Jorrit Bakker"
 date: "2024-04-01"
 output: pdf_document
 ---
+
+### Fitting to field data
+
+```{r include = FALSE}
+fit.pars <- def.pars
+fit.pars["r_nitri"]    <- 0.19
+fit.pars["r_aera"]     <- 0.00009
+fit.pars["riverDON"]   <- 0.36
+
+fit.std <- steady.1D (y = state.ini, func = AquiModel, parms = fit.pars, 
+                     nspec = nspec, dimens = N, names = SVnames, 
+                     positive = TRUE, atol = 1e-10, rtol = 1e-10)
+```
+
+```{r echo = FALSE}
+# Make vectors for the variables to be plotted and the y-axis names
+plt_variables <- c("DON", "Oxygen", "Ammonia")
+plt_ylabel <- c("mol DON /m3", "mol O2 /m3", "mol NH3 /m3")
+
+# Make a plot with a 2x2 matrix
+par(mfrow = c(2, 2))
+
+# Loop over the to be plotted variables and plot every single one with their respective y-axis labels
+for (i in 1:length(plt_variables)) {
+  plt_variables[i]
+  plot(def.std, fit.std, grid=Grid$x.mid, 
+       lty=1, lwd=2,
+       which = plt_variables[i], mfrow=NULL,
+       ylab  = plt_ylabel[i],  
+       xlab  = "distance (m)",
+       cex.main = 1.5, cex.axis = 1.25, cex.lab = 1.25)
+  
+  # If statements state plot the field data for the right variables
+  if (plt_variables[i] == "DON") {
+     points(aquifer_fielddata$distance_m, aquifer_fielddata[[plt_variables[i]]] / (16/106),  col = 3)
+  }
+  
+  if (plt_variables[i] %in% c("Oxygen", "Ammonia")) {
+     points(aquifer_fielddata$distance_m, aquifer_fielddata[[plt_variables[i]]],  col = 3)
+  }
+  
+}
+
+# Plot the legend in the remaining panel of the matrix
+plot.new()
+
+legend("topright", legend = c("default", "fitted", "field"), 
+       lty = c(1, 1, -1), lwd = c(2, 2, 1), pch = c(-1, -1, 1), col = c(1,2,3),
+       cex = 1.5)
+```
+
+### Savety concentrations
+
+```{r echo = FALSE}
+# Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
+plt_variables <- c("DON", "Nitrate", "Ammonia")
+plt_ylabel <- c("mol DON /m3", "mol NO3 /m3", "mol NH3 /m3")
+plt_savelimit <- c(2.498e-1, 4.032e-1, 2.937e-3)
+
+# Make a plot with a 2x2 matrix
+par(mfrow = c(2, 2))
+
+# Loop over the to be plotted variables and plot every single one with their respective y-axis labels
+for (i in 1:length(plt_variables)) {
+  plt_variables[i]
+  plot(def.std, grid=Grid$x.mid, 
+       lty=1, lwd=2,
+       which = plt_variables[i], mfrow=NULL,
+       ylab  = plt_ylabel[i],  
+       xlab  = "distance (m)",
+       cex.main = 1.5, cex.axis = 1.25, cex.lab = 1.25)
+  
+  # If statements plot water safety concentrations for the right variables
+  
+  if (plt_variables[i] %in% c("DON", "Nitrate", "Ammonia")) {
+     abline(h = plt_savelimit[i], col = 4)
+  }
+}
+
+# Plot the legend in the remaining panel of the matrix
+plot.new()
+
+legend("topleft", legend = c("steady", "savety"), 
+       lty = c(1, 1), lwd = c(2,2), pch = c(-1, -1), col = c(1,4),
+       cex = 1.5)
+```
+
+

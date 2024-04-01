@@ -5,4 +5,190 @@ date: "2024-04-01"
 output: html_document
 ---
 
+Use the shiny package to be able to change model parameters and view the model results interactively 
 
+```{r}
+require(shiny)
+```
+
+```{r}
+
+# Define UI (user interface)
+UI.Aquifer <- shinyUI(pageWithSidebar(      
+
+  # Application title
+  headerPanel("OM degradation in aquifer model"),
+  
+  # Make a panel in the sidebar which contains sliders for the various parameters
+  sidebarPanel(
+   sliderInput(inputId="r_aeromin", 
+               label = "r_aeromin: rate constant of aerobic mineralization [/h]",
+               min = 0, max = 0.02, step = 0.0002, value = def.pars["r_aeromin"]),
+   sliderInput(inputId="r_denitr", 
+               label = "r_denitr: rate constant of denitrification [/h]",
+               min = 0, max = 0.02, step = 0.0002, value = def.pars["r_denitr"]),
+   sliderInput(inputId="r_nitri", 
+               label = "r_nitri: rate constant of nitrification [/(mol/m3)/h]",
+               min = 0, max = 1, step = 0.01, value = def.pars["r_nitri"]),
+   sliderInput(inputId="r_aera", 
+               label = "r_aera: rate constant of aeration [/h]",
+               min = 0, max = 0.003, step = 0.00003, value = def.pars["r_aera"]),
+   sliderInput(inputId="kO2", 
+               label = "kO2: Affinity constant in Michaelis-Mentan rate limitation/inhibition term for O2 [mol/m3]",
+               min = 0, max = 100/1000, step = 1/1000, value = def.pars["kO2"]),
+   sliderInput(inputId="kNO3", 
+               label = "kNO3: Affinity constant in Michaelis-Mentan rate limitation term for NO3 [mol/m3]",
+               min = 0, max = 100/1000, step = 1/1000, value = def.pars["kNO3"]),
+   sliderInput(inputId="riverDON", 
+               label = "riverDON: Dissolved organic nitrogen concentration in river [mol/m3]", 
+               min = 0, max = 1000/1000, step = 10/1000, value = def.pars["riverDON"]),
+   sliderInput(inputId="riverO2", 
+               label = "riverO2: O2 concentration in river [mol/m3]", 
+               min = 0, max = 1000/1000, step = 10/1000, value = def.pars["riverO2"]),
+   sliderInput(inputId="riverNO3", 
+               label = "riverNO3: NO3 concentration river [mol/m3]", 
+               min = 0, max = 500/1000, step = 5/1000, value = def.pars["riverNO3"]),
+   sliderInput(inputId="riverNH3", 
+               label = "riverNH3: NH3 concentration river [mol/m3]", 
+               min = 0, max = 100/1000, step = 1/1000, value = def.pars["riverNH3"]),
+   
+   # Make an action button, which triggers an effect once pressed (defined in server)
+   actionButton (inputId="resetButton",
+                 label="Reset Parameters"),
+   
+   # Make an check box, which toggles an effect on or off
+   checkboxInput(inputId="defaultRun",
+                 label=strong("Add default run"), value = TRUE),
+   
+   checkboxInput(inputId="fieldData",
+                 label=strong("Add calibration field data"), value = TRUE),
+   
+   checkboxInput(inputId="savetyLimit",
+                 label=strong("Add water concentration savety limit"), value = TRUE),
+
+   br()   # HTML break
+  ),
+  
+  # Define contents of the main panel 
+  mainPanel(
+      plotOutput("PlotAquifer", height = "700"))
+))
+```
+
+```{r, fig.width=50, fig.height=50}
+
+# Define server (back-end)
+Server.Aquifer <- shinyServer(function(input, output, session) {
+
+  # Define the action of clicking on clicking the action button
+  observeEvent(input$resetButton, {
+    
+    # Convert the default parameters to a list
+    def.pars.list <- as.list(def.pars) 
+    
+    # Change the current parameter values to the default ones
+    updateNumericInput(session, "r_aeromin",  value = def.pars.list$r_aeromin)
+    updateNumericInput(session, "r_denitr",   value = def.pars.list$r_denitr)
+    updateNumericInput(session, "r_nitri",    value = def.pars.list$r_nitri)
+    updateNumericInput(session, "r_aera",     value = def.pars.list$r_aera)
+    updateNumericInput(session, "kO2",        value = def.pars.list$kO2)
+    updateNumericInput(session, "kNO3",       value = def.pars.list$kNO3)
+    updateNumericInput(session, "riverDON",   value = def.pars.list$riverDON)
+    updateNumericInput(session, "riverO2",    value = def.pars.list$riverO2)
+    updateNumericInput(session, "riverNO3",   value = def.pars.list$riverNO3)
+    updateNumericInput(session, "riverNH3",   value = def.pars.list$riverNH3)
+  })
+
+  # Get the model parameters set by the sliders as defined in the UI
+  getpars <- reactive( {
+    
+    # Get the default parameters as a list
+    pars           <- as.list(def.pars)
+    
+    # Set the adaptable model parameters to the ones given by the sliders
+    pars$r_aeromin <- input$r_aeromin        
+    pars$r_denitr  <- input$r_denitr
+    pars$r_nitri   <- input$r_nitri
+    pars$r_aera    <- input$r_aera
+    pars$kO2       <- input$kO2
+    pars$kNO3      <- input$kNO3
+    pars$riverDON  <- input$riverDON
+    pars$riverO2   <- input$riverO2
+    pars$riverNO3  <- input$riverNO3
+    pars$riverNH3  <- input$riverNH3
+    
+    # Return pars and convert to a vector
+    return(unlist(pars))                
+  })
+
+  # Get and plot the output, which is visible in the main panel
+  output$PlotAquifer <- renderPlot({
+    
+    # Get the adapted model parameters, as defined above
+    pars <- getpars() 
+    
+    # Calculate the steady state solution with these new parameters
+    out  <- steady.1D(y = state.ini, parms = pars, func = AquiModel, 
+                          names = SVnames, nspec = nspec, dimens = N,
+                          positive = TRUE, atol = 1e-10, rtol = 1e-10)
+
+    # Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
+    plt_variables <- c("DON", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification")
+    
+    plt_ylabel <- c("mol DON /m3", "mol O2 /m3", "mol NO3 /m3", "mol NH3 /m3", "mol N2 /m3", "mol DON /m3 /h", "mol DON /m3 /h", "mol NH3 /m3 /h")
+    
+    plt_savelimit <- c(2.498e-1, 0, 4.032e-1, 2.937e-3, 0, 0, 0, 0)
+    
+    # Make the plots as a 3x3 matrix  
+    par(mfrow = c(3, 3))
+    
+    # Loop over each variable to be plotted  
+    for (i in 1:length(plt_variables)) {
+      # If the defaultRun checkbox is toggled, plot both the default values and dynamix output
+      if (input$defaultRun) {
+         plot(def.std, out, grid=Grid$x.mid, lty=1, lwd=2, col = 1:2,
+         which = plt_variables[i], mfrow=NULL,
+         ylab  = plt_ylabel[i], 
+         xlab  = "distance (m)",
+         cex.main = 2, cex.axis = 1.5, cex.lab = 1.5)
+      # Otherwise, only plot the dynamix output
+      } else {
+         plot(out, grid=Grid$x.mid, lty=1, lwd=2, col = 2,
+         which = plt_variables[i], mfrow=NULL,
+         ylab  = plt_ylabel[i], 
+         xlab  = "distance (m)",
+         cex.main = 2, cex.axis = 1.5, cex.lab = 1.5)
+      }
+      
+      # For specific variables, plot the field data if the check box fieldData is toggled
+      if (plt_variables[i] == "DON" & input$fieldData) {
+         points(aquifer_fielddata$distance_m, aquifer_fielddata[[plt_variables[i]]] / (16/106),  col = 3)
+      }
+      
+      if (plt_variables[i] %in% c("Oxygen", "Ammonia") & input$fieldData) {
+         points(aquifer_fielddata$distance_m, aquifer_fielddata[[plt_variables[i]]],  col = 3)
+      }
+      
+      # For specific variables, plot the water savety concentration if the check box savetyLimit is toggled
+      if (plt_variables[i] %in% c("DON", "Nitrate", "Ammonia") & input$savetyLimit) {
+         abline(h = plt_savelimit[i], col = 4)
+      }
+    }
+    
+    # Plot the legend in the remaining panel of the matrix
+    plot.new()
+
+    legend("topright", legend = c("default", "output", "field", "save"), 
+           lty = c(1, 1, -1, 1), lwd = c(2, 2, 1, 2), pch = c(-1, -1, 1, -1), col = 1:4,
+           cex = 2)
+      
+  })  # end output$plot
+
+})  # end of the definition of shinyServer
+```
+
+To run the shiny application, run the following chunk
+
+```{r}
+#shinyApp(ui = UI.Aquifer, server = Server.Aquifer) 
+```
