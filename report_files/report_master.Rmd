@@ -1,0 +1,41 @@
+---
+title: "Working title"
+author: "Willem Poelman, Denis Power and Jorrit Bakker"
+date: "2024-04-01"
+output: pdf_document
+bibliography: references.bib
+csl: apa.csl
+---
+
+# Introduction
+
+```{r child = "introduction.Rmd"}
+
+```
+
+# Methods
+
+```{r child = "methods.Rmd"}
+
+```
+
+# Results and discussion
+
+```{r child = "results_discussion.Rmd"}
+
+```
+
+# Conclusion
+
+# Contributions
+
+# References
+
+<div id="refs"></div>
+
+# Appendix
+
+```{r child = "appendix.Rmd"}
+
+```
+
