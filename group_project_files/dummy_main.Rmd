@@ -1,0 +1,108 @@
+---
+title: "R Markdown examples"
+author: "Willem Poelman, Denis Power and Jorrit Bakker"
+date: "2024-03-31"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+bibliography: test_sources.bib
+csl: apa.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Child and master files
+
+This file is the master file, at any point, you may reference a child file which contains part of the report, to make the whole more clear. This is done with a R-chunk that has "r child = 'insert_rmd_file_name_here.rmd" in the chunk options. For example;
+
+## Dummy introduction
+
+```{r child = "dummy_introduction.Rmd"}
+
+```
+
+Will put the contents of the introduction file bellow the header.
+
+When knitting, it follows the order in which the chunks are presented. Thus you could make variables in this file
+
+```{r}
+aap <- 1:10
+```
+
+## Dummy results
+
+```{r child = 'dummy_results.Rmd'}
+
+```
+
+and vice versa
+
+```{r}
+plot(aap, noot)
+```
+
+# Figures and figure captions and outputs
+
+Figure captions can be included in the chunk options in the following way:
+
+```{r fig.cap = "Stopping distance for cars with different speed"}
+plot(cars)
+```
+
+You can also insert images, give them captions and change their size and position in the chunk options:
+
+```{r out.width = "50%", fig.align = "center", fig.cap = "Picture of different kind of diatoms"}
+knitr::include_graphics("Picture_Diatoms.jpeg")
+```
+
+As you can see figure numbering is done automatically based on the order they appear.
+
+If you do not want the output of a chunk to appear in the document, you can do this with "include=FALSE"
+
+```{r include = FALSE}
+# Setting up some parameters and do some background calculations
+a <- 10
+b <- 20
+c <- 30
+d <- (a + b) * c
+```
+
+```{r}
+# Doing the thing you actually want to show
+d
+```
+
+Alternatively, you can only hide the source code but do show the code output:
+
+```{r echo = FALSE, out.width = "50%", fig.align = "center", fig.cap = "Some flower data"}
+plot(iris)
+```
+
+Other chunk options can be found at ***[bookdown](https://bookdown.org/yihui/rmarkdown-cookbook/hide-one.html)***
+
+# Text formatting
+
+- Use an asterisks or underscore to get *itallic* _text_
+- Use double asterisks for **bold text**
+- Use tildes for s~ubscript~
+- Use carets for s^uperscript^
+  - NO~3~^-^
+- Let something appear as code using backticks ```code```
+
+# Citing
+For citing, use an "@"-sign and then the key; the last name of the first author of the paper, succeeded by the year of publication and put the whole in square brackets; "[ ]". If you reference inline, do not use the square brackets. For example;
+
+It is said in @Serugendo2005 that purple is blue. However, other sources say it is red instead [@Mortlock2004].
+
+This will then automatically show up in the bibliography in the bottom of the document.
+
+You will need to set up a bibliography file beforehand, here I used the example file "test_sources.bib", but any .bib file will work. You may need to add a key manually. 
+
+By default, the bibliography appears at the bottom of the document, but you can force its positioning with the following if need be:
+
+<div id="refs"></div>
+
+And now it should appear in between.

@@ -1,0 +1,17 @@
+---
+title: "results"
+author: "Jorrit"
+date: "2024-03-31"
+output: pdf_document
+---
+
+# Results
+
+And use them in the child file
+
+```{r}
+aap
+noot <- aap * 2
+noot
+```
+
