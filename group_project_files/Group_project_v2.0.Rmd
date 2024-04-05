@@ -171,8 +171,9 @@ AquiModel <- function (t, state, parms)
           
           # Reaction rates            
           Aerobic_mineralisation = aeroMin,             # Aerobic mineralisation rate [mol DON /m3 /h]
-          Denitrification = denitri,                    # Denitrification rate [mol DON /m3 /h]
-          Nitrification = nitri,                        # Nitrification rate [mol NH3 /m3 /h]
+          Denitrification   = denitri,                  # Denitrification rate [mol DON /m3 /h]
+          Nitrification     = nitri,                    # Nitrification rate [mol NH3 /m3 /h]
+          Aeration          = aeration,                 # Aeration rate [mol O2 / m3 / h]
           
           # Aquifer integrated reaction rates for budget
           TotalAeroDeg      = TotalAeroDeg,             # [mol DON /m2 /h]
@@ -273,6 +274,85 @@ BUDGET   <- std0[toselect]
 unlist(BUDGET)    # display BUDGET as a vector with named elements rather than a list
 ```
 
+## Sensitivity
+
+```{r}
+sens <- function(parameter, par_name){
+  pars.sens <- def.pars
+  pars.sens[par_name] <- parameter
+  
+  sens <-    steady.1D (y=state.ini, func=AquiModel, parms=pars.sens, 
+                       nspec=nspec, dimens=N, names=SVnames,
+                       positive = TRUE, atol = 1e-10, rtol = 1e-10)  
+  return((sens$y[,"Ammonia"]))
+}
+
+DON_vect <- seq(from = 0, to = 0.7, length.out = 50)
+NH3_DON_vect <- NULL
+
+for (riverDON in DON_vect){
+  model_output <- sens(riverDON, "riverDON")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_DON_vect <- c(NH3_DON_vect, conc_200)
+}
+
+NO3_vect <- seq(from = 0, to = 0.3, length.out = 50)
+NH3_NO3_vect <- NULL
+
+for (riverNO3 in NO3_vect){
+  model_output <- sens(riverNO3, "riverNO3")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_NO3_vect <- c(NH3_NO3_vect, conc_200)
+}
+
+NH3_vect <- seq(from = 0, to = 0.1, length.out = 50)
+NH3_NH3_vect <- NULL
+
+for (riverNH3 in NH3_vect){
+  model_output <- sens(riverNH3, "riverNH3")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_NH3_vect <- c(NH3_NH3_vect, conc_200)
+}
+
+aera_vect <- seq(from = 0, to = 0.0006, length.out = 50)
+NH3_aera_vect <- NULL
+
+for (r_aera in aera_vect){
+  model_output <- sens(r_aera, "r_aera")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_aera_vect <- c(NH3_aera_vect, conc_200)
+}
+
+```
+
+```{r}
+plt_x_variables <- list(DON = DON_vect, NO3 = NO3_vect, NH3 = NH3_vect, aera = aera_vect)
+plt_y_variables <- list(DON = NH3_DON_vect, NO3 = NH3_NO3_vect, NH3 = NH3_NH3_vect, aera = NH3_aera_vect)
+plt_variables <- c("DON", "NO3", "NH3", "aera")
+plt_x_labels <- c("river DON concentration [mol/m3]", "river NO3 concentration [mol/m3]", "river NH3 concentration [mol/m3]", "aeration rate [/h]")
+
+plt_variables[1]
+par(mar = c(2.5, 3, 2, 0.5),
+    mgp=c(1.5,0.5,0),
+    mfrow=c(3,2))
+plt_x_variables[plt_variables[1]]
+for (i in 1:length(plt_variables)) {
+
+  plot(plt_x_variables[[plt_variables[i]]], plt_y_variables[[plt_variables[i]]], type="l", 
+       xlab = plt_x_labels[i],
+       ylab = "NH3 concentration at 200m [mol/m3]")
+  abline(h = 2.937e-3, col = 4)
+
+}
+
+
+```
+
+
 ## Shiny
 
 Use the shiny package to be able to change model parameters and view the model results interactively 
@@ -280,7 +360,6 @@ Use the shiny package to be able to change model parameters and view the model r
 ```{r}
 require(shiny)
 ```
-
 
 ```{r}
 
@@ -457,7 +536,6 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
 
 })  # end of the definition of shinyServer
 ```
-
 
 To run the shiny application, run the following chunk
 
