@@ -1,6 +1,6 @@
 ---
 title: "methods"
-author: "Willem Poelman, Denis Power and Jorrit Bakker"
+author: "Willem Poelma, Denis Power and Jorrit Bakker"
 date: "2024-04-01"
 output: pdf_document
 ---
