@@ -5,6 +5,31 @@ date: "2024-04-01"
 output: pdf_document
 ---
 
+# Zonation and shapes
+
+```{r echo = FALSE, fig.cap = "*insert captions*"}
+# Make vectors for the variables to be plotted and the y-axis names
+plt_variables <- c("DON", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification", "Aeration")
+plt_ylabel <- c("mol DON /m3", "mol O2 /m3", "mol NO3 /m3", "mol NH3 /m3", "mol N2 /m3", "mol DON /m3 /h", "mol DON /m3 /h", "mol NH3 /m3 /h", "mol O2 /m3 /h")
+
+# Make a plot with a 3x3 matrix and set graphing parameters
+par(mar = c(2.5, 3, 2, 0.5),
+    mgp=c(1.5,0.5,0),
+    mfrow = c(3, 3))  
+
+# Loop over the to be plotted variables and plot every single one with their respective y-axis labels
+for (i in 1:length(plt_variables)) {
+  plt_variables[i]
+  plot(def.std, grid = Grid$x.mid, 
+       lty = 1, lwd = 2,
+       ylab  = plt_ylabel[i], 
+       xlab = "distance (m)",
+       which = plt_variables[i], mfrow=NULL,
+       cex.main = 1.5, cex.axis = 1.25, cex.lab = 1.25)
+}
+
+```
+
 ### Fitting to field data
 
 ```{r include = FALSE}
@@ -18,7 +43,9 @@ fit.std <- steady.1D (y = state.ini, func = AquiModel, parms = fit.pars,
                      positive = TRUE, atol = 1e-10, rtol = 1e-10)
 ```
 
-```{r echo = FALSE}
+
+
+```{r echo = FALSE, fig.cap = "*insert caption*"}
 # Make vectors for the variables to be plotted and the y-axis names
 plt_variables <- c("DON", "Oxygen", "Ammonia")
 plt_ylabel <- c("mol DON /m3", "mol O2 /m3", "mol NH3 /m3")
@@ -57,7 +84,7 @@ legend("topright", legend = c("default", "fitted", "field"),
 
 ### Savety concentrations
 
-```{r echo = FALSE}
+```{r echo = FALSE, fig.cap = "insert caption"}
 # Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
 plt_variables <- c("DON", "Nitrate", "Ammonia")
 plt_ylabel <- c("mol DON /m3", "mol NO3 /m3", "mol NH3 /m3")
@@ -89,6 +116,27 @@ plot.new()
 legend("topleft", legend = c("steady", "savety"), 
        lty = c(1, 1), lwd = c(2,2), pch = c(-1, -1), col = c(1,4),
        cex = 1.5)
+```
+
+```{r}
+plt_x_variables <- list(DON = DON_vect, NO3 = NO3_vect, NH3 = NH3_vect, aera = aera_vect)
+plt_y_variables <- list(DON = NH3_DON_vect, NO3 = NH3_NO3_vect, NH3 = NH3_NH3_vect, aera = NH3_aera_vect)
+plt_variables <- c("DON", "NO3", "NH3", "aera")
+plt_x_labels <- c("river DON concentration [mol/m3]", "river NO3 concentration [mol/m3]", "river NH3 concentration [mol/m3]", "aeration rate [/h]")
+
+plt_variables[1]
+par(mar = c(2.5, 3, 2, 0.5),
+    mgp=c(1.5,0.5,0),
+    mfrow=c(3,2))
+plt_x_variables[plt_variables[1]]
+for (i in 1:length(plt_variables)) {
+
+  plot(plt_x_variables[[plt_variables[i]]], plt_y_variables[[plt_variables[i]]], type="l", 
+       xlab = plt_x_labels[i],
+       ylab = "NH3 concentration at 200m [mol/m3]")
+  abline(h = 2.937e-3, col = 4)
+
+}
 ```
 
 

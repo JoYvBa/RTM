@@ -1,6 +1,6 @@
 ---
 title: "methods"
-author: "Willem Poelma, Denis Power and Jorrit Bakker"
+author: "Willem Poelman, Denis Power and Jorrit Bakker"
 date: "2024-04-01"
 output: pdf_document
 ---
@@ -160,8 +160,9 @@ AquiModel <- function (t, state, parms)
           
           # Reaction rates            
           Aerobic_mineralisation = aeroMin,             # Aerobic mineralisation rate [mol DON /m3 /h]
-          Denitrification = denitri,                    # Denitrification rate [mol DON /m3 /h]
-          Nitrification = nitri,                        # Nitrification rate [mol NH3 /m3 /h]
+          Denitrification   = denitri,                  # Denitrification rate [mol DON /m3 /h]
+          Nitrification     = nitri,                    # Nitrification rate [mol NH3 /m3 /h]
+          Aeration          = aeration,                 # Aeration rate [mol O2 / m3 / h]
           
           # Aquifer integrated reaction rates for budget
           TotalAeroDeg      = TotalAeroDeg,             # [mol DON /m2 /h]
@@ -209,7 +210,7 @@ aquifer_fielddata <- read.csv("/Users/jorrit/Library/CloudStorage/Dropbox/Docume
 ```
 
 
-```{r}
+```{r include = FALSE}
 
 # Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
 plt_variables <- c("DON", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification")
@@ -262,5 +263,56 @@ BUDGET   <- std0[toselect]
 unlist(BUDGET)    # display BUDGET as a vector with named elements rather than a list
 ```
 
-## Shiny
+## Sensitivity analysis
 
+```{r}
+sens <- function(parameter, par_name){
+  pars.sens <- def.pars
+  pars.sens[par_name] <- parameter
+  
+  sens <-    steady.1D (y=state.ini, func=AquiModel, parms=pars.sens, 
+                       nspec=nspec, dimens=N, names=SVnames,
+                       positive = TRUE, atol = 1e-10, rtol = 1e-10)  
+  return((sens$y[,"Ammonia"]))
+}
+
+DON_vect <- seq(from = 0, to = 0.7, length.out = 50)
+NH3_DON_vect <- NULL
+
+for (riverDON in DON_vect){
+  model_output <- sens(riverDON, "riverDON")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_DON_vect <- c(NH3_DON_vect, conc_200)
+}
+
+NO3_vect <- seq(from = 0, to = 0.3, length.out = 50)
+NH3_NO3_vect <- NULL
+
+for (riverNO3 in NO3_vect){
+  model_output <- sens(riverNO3, "riverNO3")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_NO3_vect <- c(NH3_NO3_vect, conc_200)
+}
+
+NH3_vect <- seq(from = 0, to = 0.1, length.out = 50)
+NH3_NH3_vect <- NULL
+
+for (riverNH3 in NH3_vect){
+  model_output <- sens(riverNH3, "riverNH3")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_NH3_vect <- c(NH3_NH3_vect, conc_200)
+}
+
+aera_vect <- seq(from = 0, to = 0.0006, length.out = 50)
+NH3_aera_vect <- NULL
+
+for (r_aera in aera_vect){
+  model_output <- sens(r_aera, "r_aera")
+  conc_200 <- (model_output[200] + model_output[201]) / 2
+  
+  NH3_aera_vect <- c(NH3_aera_vect, conc_200)
+}
+```
