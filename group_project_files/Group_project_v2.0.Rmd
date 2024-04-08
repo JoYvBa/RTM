@@ -253,6 +253,9 @@ for (i in 1:length(plt_variables)) {
   if (plt_variables[i] %in% c("DON", "Nitrate", "Ammonia")) {
      abline(h = plt_savelimit[i], col = 4)
   }
+  if (plt_variables[i] %in% c("DON", "Nitrate", "Ammonia")){
+    abline(v = 200, col = 5)
+  }
 }
 
 # Plot the legend in the remaining panel of the matrix
