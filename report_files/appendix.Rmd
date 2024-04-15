@@ -2,12 +2,16 @@
 title: "appendix"
 author: "Jorrit"
 date: "2024-04-01"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-Use the shiny package to be able to change model parameters and view the model results interactively 
+## Shiny application {#shiny}
 
-```{r}
+The code used to perform the fitting of the parameters, using the R shiny package.
+
+```{r echo = FALSE}
 require(shiny)
 ```
 
@@ -39,9 +43,9 @@ UI.Aquifer <- shinyUI(pageWithSidebar(
    sliderInput(inputId="kNO3", 
                label = "kNO3: Affinity constant in Michaelis-Mentan rate limitation term for NO3 [mol/m3]",
                min = 0, max = 100/1000, step = 1/1000, value = def.pars["kNO3"]),
-   sliderInput(inputId="riverDON", 
-               label = "riverDON: Dissolved organic nitrogen concentration in river [mol/m3]", 
-               min = 0, max = 1000/1000, step = 10/1000, value = def.pars["riverDON"]),
+   sliderInput(inputId="riverDOM", 
+               label = "riverDOM: Dissolved organic matter concentration in river [mol/m3]", 
+               min = 0, max = 1000/1000, step = 10/1000, value = def.pars["riverDOM"]),
    sliderInput(inputId="riverO2", 
                label = "riverO2: O2 concentration in river [mol/m3]", 
                min = 0, max = 1000/1000, step = 10/1000, value = def.pars["riverO2"]),
@@ -65,6 +69,9 @@ UI.Aquifer <- shinyUI(pageWithSidebar(
    
    checkboxInput(inputId="savetyLimit",
                  label=strong("Add water concentration savety limit"), value = TRUE),
+   
+   checkboxInput(inputId="wellLocation",
+                 label=strong("Add well location at 200m"), value = TRUE),
 
    br()   # HTML break
   ),
@@ -93,7 +100,7 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
     updateNumericInput(session, "r_aera",     value = def.pars.list$r_aera)
     updateNumericInput(session, "kO2",        value = def.pars.list$kO2)
     updateNumericInput(session, "kNO3",       value = def.pars.list$kNO3)
-    updateNumericInput(session, "riverDON",   value = def.pars.list$riverDON)
+    updateNumericInput(session, "riverDOM",   value = def.pars.list$riverDOM)
     updateNumericInput(session, "riverO2",    value = def.pars.list$riverO2)
     updateNumericInput(session, "riverNO3",   value = def.pars.list$riverNO3)
     updateNumericInput(session, "riverNH3",   value = def.pars.list$riverNH3)
@@ -112,7 +119,7 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
     pars$r_aera    <- input$r_aera
     pars$kO2       <- input$kO2
     pars$kNO3      <- input$kNO3
-    pars$riverDON  <- input$riverDON
+    pars$riverDOM  <- input$riverDOM
     pars$riverO2   <- input$riverO2
     pars$riverNO3  <- input$riverNO3
     pars$riverNH3  <- input$riverNH3
@@ -133,14 +140,15 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
                           positive = TRUE, atol = 1e-10, rtol = 1e-10)
 
     # Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
-    plt_variables <- c("DON", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification")
-    
-    plt_ylabel <- c("mol DON /m3", "mol O2 /m3", "mol NO3 /m3", "mol NH3 /m3", "mol N2 /m3", "mol DON /m3 /h", "mol DON /m3 /h", "mol NH3 /m3 /h")
+    plt_variables <- c("DOM", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification")
+    plt_title <- c("DOM", "Oxygen", "Nitrate", "Ammonia", "Nitrogen", "Aerobic_mineralisation", "Denitrification", "Nitrification", "Aeration")
+    plt_ylabel <- c(expression(paste("mol DOM m"^"-3")), expression(paste("mol O"["2"], " m"^"-3")), expression(paste("mol NO"["3"]^"-", " m"^"-3")), expression(paste("mol NH"["3"]," m"^"-3")), expression(paste("mol N"["2"]," m"^"-3")), expression(paste("mol DOM m"^"-3","h"^"-1")), expression(paste("mol DOM m"^"-3","h"^"-1")), expression(paste("mol NH"["3"]," m"^"-3","h"^"-1")))
     
     plt_savelimit <- c(2.498e-1, 0, 4.032e-1, 2.937e-3, 0, 0, 0, 0)
     
     # Make the plots as a 3x3 matrix  
-    par(mfrow = c(3, 3))
+    par(mfrow = c(3, 3),
+        mgp=c(2,0.5,0))
     
     # Loop over each variable to be plotted  
     for (i in 1:length(plt_variables)) {
@@ -148,6 +156,7 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
       if (input$defaultRun) {
          plot(def.std, out, grid=Grid$x.mid, lty=1, lwd=2, col = 1:2,
          which = plt_variables[i], mfrow=NULL,
+         main = plt_title[i],
          ylab  = plt_ylabel[i], 
          xlab  = "distance (m)",
          cex.main = 2, cex.axis = 1.5, cex.lab = 1.5)
@@ -155,13 +164,14 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
       } else {
          plot(out, grid=Grid$x.mid, lty=1, lwd=2, col = 2,
          which = plt_variables[i], mfrow=NULL,
+         main = plt_title[i],
          ylab  = plt_ylabel[i], 
          xlab  = "distance (m)",
          cex.main = 2, cex.axis = 1.5, cex.lab = 1.5)
       }
       
       # For specific variables, plot the field data if the check box fieldData is toggled
-      if (plt_variables[i] == "DON" & input$fieldData) {
+      if (plt_variables[i] == "DOM" & input$fieldData) {
          points(aquifer_fielddata$distance_m, aquifer_fielddata[[plt_variables[i]]] / (16/106),  col = 3)
       }
       
@@ -170,16 +180,20 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
       }
       
       # For specific variables, plot the water savety concentration if the check box savetyLimit is toggled
-      if (plt_variables[i] %in% c("DON", "Nitrate", "Ammonia") & input$savetyLimit) {
+      if (plt_variables[i] %in% c("DOM", "Nitrate", "Ammonia") & input$savetyLimit) {
          abline(h = plt_savelimit[i], col = 4)
       }
+      
+      if (plt_variables[i] %in% c("DOM", "Nitrate", "Ammonia") & input$wellLocation) {
+         abline(v = 200, col = 6)
+      } 
     }
     
     # Plot the legend in the remaining panel of the matrix
     plot.new()
 
-    legend("topright", legend = c("default", "output", "field", "save"), 
-           lty = c(1, 1, -1, 1), lwd = c(2, 2, 1, 2), pch = c(-1, -1, 1, -1), col = 1:4,
+    legend("topright", legend = c("default", "output", "field", "savety", "well"), 
+           lty = c(1, 1, -1, 1, 1), lwd = c(2, 2, 1, 2, 2), pch = c(-1, -1, 1, -1, -1), col = c(1,2,3,4,6),
            cex = 2)
       
   })  # end output$plot
@@ -189,6 +203,6 @@ Server.Aquifer <- shinyServer(function(input, output, session) {
 
 To run the shiny application, run the following chunk
 
-```{r}
-#shinyApp(ui = UI.Aquifer, server = Server.Aquifer) 
+```{r eval = FALSE}
+shinyApp(ui = UI.Aquifer, server = Server.Aquifer) 
 ```

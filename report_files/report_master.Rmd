@@ -1,42 +1,70 @@
 ---
-title: "Working title"
+title: "Fate of organic contamination during bank infiltration"
 author: "Willem Poelman, Denis Power and Jorrit Bakker"
-date: "2024-04-01"
+date: "2024-04-14"
 output:
-  pdf_document: default
-  html_document:
-    df_print: paged
+  pdf_document: 
+    toc: true
 bibliography: references.bib
 csl: apa.csl
 ---
 
-# Introduction
+# Introduction {#intro}
 
 ```{r child = "introduction.Rmd"}
 
 ```
 
-# Methods
+# Methods {#meth}
 
 ```{r child = "methods.Rmd"}
 
 ```
 
-# Results and discussion
+# Results {#res}
 
-```{r child = "results_discussion.Rmd"}
+```{r child = "results.Rmd"}
 
 ```
 
-# Conclusion
+# Discussion {#disc}
 
-# Contributions
+```{r child = "discussion.Rmd"}
+
+```
+
+# Conclusion {#conclu}
+
+This study showed a simplified model for bank infiltration from a river. It is shown that bank infiltration can substantially improve the water quality, given sufficient length of aquifer for the process to take place. The coupling between processes has been discussed. Increase in nitrification or aeration rates cause the aquifer water to remove ammonia faster and thus increase the water quality overall. The processes is a relatively effective and cheap way for cleaning up of river water and making it save for human consumption. 
+
+# Contributions {#contri}
+
+Conceptual model: Jorrit Bakker
+
+Initial model setup: Jorrit Bakker and Denis Power
+
+Further model coding and result generation: Jorrit Bakker
+
+Report:
+
+- Introduction: Denis Power
+
+- Methods: Jorrit Bakker
+
+- Results: Denis Power, Jorrit Bakker and Willem Poelman
+
+- Discussion: Willem Poelman, Denis Power
+
+- Conclusion: Willem Poelman and Jorrit Bakker
+
+- RMarkdown: Jorrit Bakker
+
 
 # References
 
 <div id="refs"></div>
 
-# Appendix
+# Appendix {#app}
 
 ```{r child = "appendix.Rmd"}
 
