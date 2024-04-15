@@ -1,6 +1,6 @@
 ---
 title: "Fate of organic contamination during bank infiltration"
-author: "Willem Poelman, Denis Power and Jorrit Bakker"
+author: "Jorrit Bakker, Willem Poelman and Denis Power"
 date: "2024-04-14"
 output:
   pdf_document: 
@@ -35,7 +35,9 @@ csl: apa.csl
 
 # Conclusion {#conclu}
 
-This study showed a simplified model for bank infiltration from a river. It is shown that bank infiltration can substantially improve the water quality, given sufficient length of aquifer for the process to take place. The coupling between processes has been discussed. Increase in nitrification or aeration rates cause the aquifer water to remove ammonia faster and thus increase the water quality overall. The processes is a relatively effective and cheap way for cleaning up of river water and making it save for human consumption. 
+In this study, we provided a simplified model for understanding organic matter dynamics in bank infiltration from a river. Our findings demonstrate the significant potential of bank infiltration in enhancing water quality, particularly when provided with adequate aquifer length for effective processing. Through our analysis, we clarified the interdependence of various processes involved in bank filtration, highlighting the pivotal roles of nitrification and aeration rates in expediting ammonia removal and improving overall water quality.
+
+The study underscores bank infiltration as an efficient method for purifying river water, rendering it safe for human consumption. By leveraging natural processes within riverbanks, such as aeration and microbial activity, bank filtration offers a sustainable solution for water treatment. For future research, the larger nitrogen cycle could be included for a more complete picture of the system dynamics. Furthermore, to make it more akin to a real-life scenario, human perturbation could be included as well. All in all, the insights from this report emphasize the potential of including natural filtration processes in water extraction and treatment.
 
 # Contributions {#contri}
 
@@ -55,10 +57,13 @@ Report:
 
 - Discussion: Willem Poelman, Denis Power
 
-- Conclusion: Willem Poelman and Jorrit Bakker
+- Conclusion: Jorrit Bakker, Willem Poelman and 
 
 - RMarkdown: Jorrit Bakker
 
+# Acknoledgements
+
+The authors would like to thank dr. Lubos Polerecky and Prof. Dr. Karline Soetaert for organizing and giving the course, and for their guidance in the project during lecture hours. Furthermore, we would like to thank Google, without whom some R Markdown tricks would have remained elusive to this day.
 
 # References
 

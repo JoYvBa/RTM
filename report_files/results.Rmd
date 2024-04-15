@@ -10,26 +10,25 @@ output:
 
 ## Zonation and shape {#zonshap}
 
-The steady state condition of the system shows the spatial distribution of concentrations and process rates after the system has set into equilibrium (figure \ref{fig:zone}). This gives
-insight into the different processes occurring along the length of the aquifer and how they interact.
+The steady-state condition of the system shows the spatial distribution of concentrations and process rates after the system has set into equilibrium (Figure 2). This gives insight into the different processes occurring along the length of the aquifer and how they interact.
 
-Aerobic mineralization rate is high in the beginning of the aquifer, however, over a distance of 50m, it quickly drops off . This is due to the process consuming oxygen, thereby limiting its own reaction rate. Moving further from the river, after its initial convex decrease, it flats out and very slowly decreases over the remaining length of the aquifer, as the organic matter is almost depleted.
+The aerobic mineralization rate is high in the beginning of the aquifer; however, over a distance of 50m, it quickly drops off. This is due to the process consuming oxygen, thereby limiting its own reaction rate. Moving further from the river, after its initial convex decrease, it flattens out and very slowly decreases over the remaining length of the aquifer, as the organic matter is almost depleted.
 
-The denitrification rate rises from the river to 50m into the aquifer, where it peaks and subsequently decreases in a convex manner. As denitrification is oxygen inhibited, the initially high oxygen concentration slows the process until most of the oxygen is exhausted by aerobic mineralization. The rate of denitrification peters off due to the nitrate and organic matter depleting.
+The denitrification rate rises from the river to 50m into the aquifer, where it peaks and subsequently decreases in a convex manner. As denitrification is oxygen-inhibited, the initially high oxygen concentration slows the process until most of the oxygen is exhausted by aerobic mineralization. The rate of denitrification peters off due to the nitrate and organic matter depleting.
 
-The nitrification rate is dependent on the oxygen and ammonia concentrations present in the aquifer. An increase in the beginning of the aquifer is followed by a sharp drop off due to the decrease in oxygen concentration This is then followed by a slight comeback due to the increasing ammonia concentrations caused by aerobic mineralisation and denitrification. Afterwards, the nitrification rate settles and nears zero as the ammonia is depleted.
+The nitrification rate is dependent on the oxygen and ammonia concentrations present in the aquifer. An increase in the beginning of the aquifer is followed by a sharp drop-off due to the decrease in oxygen concentration. This is then followed by a slight comeback due to the increasing ammonia concentrations caused by aerobic mineralization and denitrification. Afterwards, the nitrification rate settles and nears zero as the ammonia is depleted.
 
-The aeration rate is dependent on the difference between oxygen concentration and oxygen saturation level. As oxygen is depleted by aerobic mineralisation, the aeration rate increases to a maximum while the oxygen concentration remains near zero. Once the oxygen consuming processes slow down due to low concentrations of organic matter and ammonia, the aeration rate decreases for the rest of the aquifer. As oxygen concentration is inversely related to the aeration rate, the shape of the aeration rate in the aquifer is the shape of the oxygen concentration flipped. 
+The aeration rate is dependent on the difference between oxygen concentration and oxygen saturation level. As oxygen is depleted by aerobic mineralization, the aeration rate increases to a maximum while the oxygen concentration remains near zero. Once the oxygen-consuming processes slow down due to low concentrations of organic matter and ammonia, the aeration rate decreases for the rest of the aquifer. As oxygen concentration is inversely related to the aeration rate, the shape of the aeration rate in the aquifer is the shape of the oxygen concentration flipped.
 
-The DON is introduced into the aquifer through the river, giving an initially high concentration before dropping off as it continues through the aquifer. This is due to it being consumed via denitrification. This gives the depth profile its convex shape.
+The DOM is introduced into the aquifer through the river, giving an initially high concentration before dropping off as it continues through the aquifer. This is due to it being consumed via denitrification. This gives the depth profile its convex shape.
 
-The Oxygen profile demonstrates a convex shape with the oxygen concentration dropping as a result of the oxygen being required for the nitrification and aerobic mineralisation processes. As these process end the concentration of oxygen is able to recover to its normal level.
+The Oxygen profile demonstrates a convex shape with the oxygen concentration dropping as a result of the oxygen being required for the nitrification and aerobic mineralization processes. As these processes end, the concentration of oxygen is able to recover to its normal level.
 
-The nitrate profile initially shows a concave profile before becoming a convex profile. This is due to the already existing concentration of nitrate in the system being added to from the river, however this drops off due to the denitrification process taking place in the system.
+The nitrate profile initially shows a concave profile before becoming a convex profile. This is due to the already existing concentration of nitrate in the system being added to from the river; however, this drops off due to the denitrification process taking place in the system.
 
-The ammonia concentration rises from a concentration value of zero from the processes of aerobic mineralisation and denitrification. This abundance of ammonia is the used in the nitrification process forming nitrate, giving the curve its concave shape.
+The ammonia concentration rises from a concentration value of zero from the processes of aerobic mineralization and denitrification. This abundance of ammonia is then used in the nitrification process, forming nitrate, giving the curve its concave shape.
 
-The Nitrogen concentration profile forms a concave curve due to its continual increase due to the denitrification coming from the dissolved organic nitrogen pool and the nitrate pool. This increase continues until both pools are exhausted. 
+The Nitrogen concentration profile forms a concave curve due to its continual increase due to the denitrification coming from the dissolved organic nitrogen pool and the nitrate pool. This increase continues until both pools are exhausted.
 
 ```{r zone, echo = FALSE, fig.cap = "Concentration and rate profiles over the aquifer length."}
 # Make vectors for the variables to be plotted and the y-axis names
@@ -58,7 +57,7 @@ for (i in 1:length(plt_variables)) {
 
 ## Budgets
 
-A budget of the system is set up to evaluate the fate of the state variables in the system \ref{tab: budget}. These fluxes can be further visualized in the conceptual diagram of the system \ref{fig: conbud}
+A budget of the system is set up to evaluate the fate of the state variables in the system (Table 1). These fluxes can be further visualized in the conceptual diagram of the system (Figure 3).
 
 ```{r budget, echo = FALSE}
 # Select which output form the steady state solution to include in the budget
@@ -72,19 +71,19 @@ knitr::kable(BUDGET, digits = 4, caption = "Budget for the bank infiltration mod
 knitr::include_graphics("conceptual_model_fluxes.png")
 ```
 
-The amount of oxygen coming in from the river and the oxygen supplied by aeration give the total amount of oxygen supplied to the system. Aerobic mineralization and nitrification both consume oxygen, the latter of which at two molecules per reaction. Therefore, the amount of oxygen used for aerobic matter mineralization is 49% of the total oxygen supplied, 28% is used for nitrification and the rest is transported out of the aquifer.
+The amount of oxygen coming in from the river and the oxygen supplied by aeration give the total amount of oxygen supplied to the system. Aerobic mineralization and nitrification both consume oxygen, the latter of which at two molecules per reaction. Therefore, the amount of oxygen used for aerobic matter mineralization is 49% of the total oxygen supplied, 28% is used for nitrification, and the rest is transported out of the aquifer.
 
-The amount of organic material making its way into the aquifer is 0.021 mol m^-3^ h^-1^, using the Redfield ratio, this is 3.13e-03 mol DON m^-3^ h^-1^. Of this, 62% is consumed by means of aerobic mineralization, and 38% by denitrification.
+The amount of organic material making its way into the aquifer is 0.021 mol m^-3^ h^-1^; using the Redfield ratio, this is 3.13e-3 mol DON m^-3^ h^-1^. Of this, 62% is consumed by means of aerobic mineralization, and 38% by denitrification.
 
-Nitrate enters the system by supply from the river and by the process of nitrification. About 3.99e-3 mol NO~3~^-^ m^-3^ h^-1^ is supplied by the river, while 3.07e-3 mol NO~3~^-^ m^-3^ h^-1^ is formed in the aquifer by nitrification. 89% of this is transformed back into ammonia by denitrification, the remaining 11% is transported away.
+Nitrate enters the system by supply from the river and by the process of nitrification. About 3.99e-3 mol NO3^-^ m^-3^ h^-1^ is supplied by the river, while 3.07e-3 mol NO3^-^ m^-3^ h^-1^ is formed in the aquifer by nitrification. 89% of this is transformed back into ammonia by denitrification, and the remaining 11% is transported away.
 
-Nitrogen!!!!
+The amount of N entering the aquifer is the sum of nitrate and DON entering the system, equal to 7.12e-3 mol N m^-3^ h^-1^. The fate of nitrogen is to either be transported out of the system as nitrate, DOM or ammonia, or be converted to molecular nitrogen and then be transported out. There is 6.28e-3 mol N m^-3^ h^-1^ leaving the system as molecular nitrogen (double the outflow flux of N~2~ because each molecule contains two N atoms). Therefore, 88% of the fixed nitrogen entering the aquifer is converted to molecular nitrogen.
 
 ## Fitting to field data
 
-The model output with the default parameters differs substantially from field data (\ref{fig:fitting}). The field data show slightly lower DON levels across the aquifer and the oxygen concentration in the further reaches of the aquifer increases slower. Lastly, the ammonia concentration peaks further into the aquifer in the field and is more spread out than with the default model parameters. 
+The model output with the default parameters differs substantially from field data (Figure 4). The field data show slightly lower DOM levels across the aquifer, and the oxygen concentration in the further reaches of the aquifer increases slower. Lastly, the ammonia concentration peaks further into the aquifer in the field and is more spread out than with the default model parameters.
 
-The aeration and nitrification rate constant and the river DON concentration were adapted to fit the model with the default parameters to the field data [table reference]. Reducing the river DON concentration decreases the river boundary concentration of DON and consequently, the concentration across the first half of the aquifer. This increases oxygen concentration across the whole aquifer, since less oxygen is consumed by aerobic mineralisation. Furthermore, less ammonia is produced by aerobic mineralisation and denitrification, reducing its concentration. By reducing the aeration rate constant, less oxygen is replenished over the aquifer length. In turn, this causes less ammonia to be converted to nitrate by nitrification, increasing the ammonia concentration. Lastly, decreasing the nitrification rate constant further increases the ammonia concentration in the aquifer. These changes in parameter fitted the field data the best (table \ref{tab:fit}).
+The aeration and nitrification rate constant and the river DOM concentration were adapted to fit the model with the default parameters to the field data (Table 2). Reducing the river DOM concentration decreases the river boundary concentration of DOM and consequently, the concentration across the first half of the aquifer. This increases oxygen concentration across the whole aquifer, since less oxygen is consumed by aerobic mineralization. Furthermore, less ammonia is produced by aerobic mineralization and denitrification, reducing its concentration. By reducing the aeration rate constant, less oxygen is replenished over the aquifer length. In turn, this causes less ammonia to be converted to nitrate by nitrification, increasing the ammonia concentration. Lastly, decreasing the nitrification rate constant further increases the ammonia concentration in the aquifer. These changes in parameter fitted the field data the best.
 
 ```{r include = FALSE}
 fit.pars <- def.pars
@@ -145,7 +144,7 @@ knitr::kable(fitted, caption = "Default and fitted parameter values for the bank
 
 ## Savety concentrations
 
-While the nitrate concentration in the aquifer stays well below the safety concentration, elevated concentrations of organic matter and ammonia make the water unsafe for human consumption in the first 200m of the aquifer [figure \ref{fig:savety}]. The first 50m of the aquifer have too high of organic matter concentrations, due to the river concentration. Aerobic mineralisation and denitrification break down the organic matter, but produce ammonia, which is subsequently elevated to concentrations above the safety criteria for drinking water. Only once enough ammonia has been converted to nitrate by nitrification becomes the water safe enough to drink. Therefore, any well used to extract drinking water from this aquifer should be located at least 200 m from the river.
+While the nitrate concentration in the aquifer stays well below the safety concentration, elevated concentrations of organic matter and ammonia make the water unsafe for human consumption in the first 200m of the aquifer (Figure 5). The first 50m of the aquifer have too high organic matter concentrations, due to the river concentration. Aerobic mineralization and denitrification break down the organic matter but produce ammonia, which is subsequently elevated to concentrations above the safety criteria for drinking water. Only once enough ammonia has been converted to nitrate by nitrification does the water become safe enough to drink. Therefore, any well used to extract drinking water from this aquifer should be located at least 200 m from the river.
 
 ```{r savety, echo = FALSE, fig.cap = "Concentration profiles of three state variables and their respecive drinking water savety concentrations. The savety concentration for nitrate (0.4 mol NO3- m-3) falls off the graph."}
 # Make vectors for the variables to be plotted, the y-axis names and the safety concentrations of some of the state variables
@@ -185,21 +184,15 @@ legend("topleft", legend = c("steady", "savety"),
 
 ## Sensitivty analysis
 
-When no denitrification is present in the water the dissolved organic Nitrogen increases. Oxygen concentration in the water becomes less, Nitrate concentration increases, Ammonia decreases in the short path of the water but over a longer path the concentration is higher than the default concentration. Nitrogen stays zero, aerobic mineralization increases, the nitrification increases but over time decreases.
+When no denitrification is present in the water, the dissolved organic nitrogen increases, oxygen concentration decreases, nitrate concentration increases, and ammonia decreases in the short path of the water, but over a longer path, the concentration is higher than the default concentration. Nitrogen concentration remains zero, aerobic mineralization increases, and nitrification increases initially but decreases over time.
 
-With the aerobic mineralization being 0, then there will be an increase in Dissolved organic nitrogen and oxygen. The nitrate will decrease with a uniform pattern. Nitrogen concentration will be less than the default concentration for nitrogen. Denitrification and nitrification will decrease in productivity and decline towards 0.
+With aerobic mineralization being 0, there will be an increase in dissolved organic nitrogen and oxygen (Figure 6). Nitrate will decrease uniformly. Nitrogen concentration will be less than the default concentration. Denitrification and nitrification productivity will decrease and decline toward 0.
 
-The nitrification rate can have a value of 0, if that’s the case then the oxygen and ammonia concentration will become higher relative to the default concentration where the nitrification rate is 0.36. DON, nitrate and nitrogen become less than the default concentrations. Aerobic mineralization increases relative to the default rate of when the nitrification rate is 0. Nitrification becomes 0 and denitrification in the first 120 meters  is still above 0 and after stays 0 along the distance from the aquifer. 
+If the nitrification rate is 0, then the oxygen and ammonia concentrations will become higher relative to the default concentration where the nitrification rate is 0.36. Dissolved organic matter, nitrate, and nitrogen concentrations become less than the default concentrations. Aerobic mineralization increases relative to the default rate when the nitrification rate is 0. Nitrification becomes 0, and denitrification in the first 120 meters is still above 0 and then remains 0 along the distance from the aquifer.
 
-For the Aeration rate with a value of 0 the concentrations increase for DON and Ammonia, for the oxygen, nitrate and nitrogen the concentrations become 0. The reactions for aerobic mineralization and nitrification decline towards a value of 0, for denitrification the first 70 meters the process occurs more often than the default rate of the denitrification.
+For the aeration rate with a value of 0, the concentrations increase for dissolved organic matter and ammonia, while for oxygen, nitrate, and nitrogen, the concentrations become 0. The reactions for aerobic mineralization and nitrification decline toward a value of 0, while for denitrification, in the first 70 meters, the process occurs more often than the default rate of denitrification.
 
-For DOM concentrations in rivers with values below 0.5 [mol/m3] the water is suitable for human consumption. When the values go above 0.5 [mol/m3] the river will have too much Ammonia in the water, thus the water will not be suitable for human consumption. Range DOM <= 0.5 [mol/m3]
-When changing the NO-3 concentration in the river, it shows that for values above 0.1 [mol/m3] the water will stay suitable for human consumption.  Range concentrations NO3 >= 0.1 [mol/m3]
-For NH3 concentrations in the river, every amount added to the water concentration will make the water unsuitable for human consumption, because the ammonia concentration will be too high. 
-
-The rate constant of aeration (r Aeration) should stay at 0.003 [/h] or above, if it reaches values below 0.003 [/h] the Ammonia concentration will exceed the limit and the water will become unsuitable for drinking water.
-
-These value ranges were all taken when the other values remained the same values as before. However the NH3 concentrations can become higher than 0 when the DOM concentration has a value of 0, for NO3 concentrations they can range to values beyond 0.1 [mol/m3]. The Ammonia concentration remains constant in these cases and stays at 0.0 [mol/m3] (figure \ref{fig:sens}).
+For dissolved organic matter concentrations in rivers with values below 0.5 [mol m^-3^], the water is suitable for human consumption. When the values go above 0.5 [mol m^-3^], the river will have too much ammonia in the water, making it unsuitable for human consumption. Range: DOM <= 0.5 [mol m^-3^].
 
 ```{r sens, echo = FALSE, fig.cap = "Sensitivy analysis of four parameters for the NH3 concentration in the aquifer."}
 plt_x_variables <- list(DOM = DOM_vect, NO3 = NO3_vect, NH3 = NH3_vect, aera = aera_vect)
