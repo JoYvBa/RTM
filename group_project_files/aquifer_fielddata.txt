@@ -1,4 +1,4 @@
-"distance_m","DON","Oxygen","Ammonia"
+"distance_m","DOM","Oxygen","Ammonia"
 0,0.0517,0.2107,5e-04
 26.3158,0.0339,0.0591,0.0047
 52.6316,0.0217,0.0044,0.0087
